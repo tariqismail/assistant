@@ -17,3 +17,7 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 );
 
 CREATE INDEX IF NOT EXISTS chat_messages_session_idx ON chat_messages(session_id, id);
+
+-- Serves the chat rate-limit query, which counts recent user messages
+-- across all sessions (see ChatStore.count_recent_user_messages).
+CREATE INDEX IF NOT EXISTS chat_messages_role_created_idx ON chat_messages(role, created_at);

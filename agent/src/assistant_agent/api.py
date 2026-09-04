@@ -470,7 +470,9 @@ def chat_message_events(
                 accumulated += event["text"]
                 yield {"type": "delta", "text": event["text"]}
             elif kind == "escalated":
-                transcript = chat_responder.condense_transcript(history + [{"role": "user", "content": user_message}])
+                transcript = chat_responder.condense_transcript(
+                    history + [{"role": "user", "content": user_message}], config=config
+                )
                 job_request = WorkspaceJobRequest(message=chat_escalation_body(user_message, transcript))
                 job = create_workspace_job(
                     job_request,

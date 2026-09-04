@@ -52,14 +52,20 @@ def build_messages(config: AppConfig, history: list[dict[str, Any]], user_messag
     return messages
 
 
-def condense_transcript(history: list[dict[str, Any]], max_turns: int = 10, max_chars: int = 4000) -> str:
+def condense_transcript(
+    history: list[dict[str, Any]],
+    max_turns: int = 10,
+    max_chars: int = 4000,
+    config: AppConfig | None = None,
+) -> str:
+    assistant_label = app_display_name(config) if config is not None else "Assistant"
     recent = history[-max_turns:] if max_turns > 0 else history
     lines = []
     for row in recent:
         content = str(row.get("content") or "").strip()
         if not content:
             continue
-        label = "User" if row.get("role") == "user" else "Arqis"
+        label = "User" if row.get("role") == "user" else assistant_label
         lines.append("%s: %s" % (label, content))
     text = "\n".join(lines)
     if len(text) > max_chars:

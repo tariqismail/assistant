@@ -128,6 +128,16 @@ class CondenseTranscriptTest(unittest.TestCase):
         text = condense_transcript(history, max_turns=10, max_chars=50)
         self.assertEqual(len(text), 50)
 
+    def test_labels_assistant_turns_with_the_configured_app_name(self) -> None:
+        history = [{"role": "assistant", "content": "hello!"}]
+        config = make_config(**{"agent.app.name": "jarvis"})
+        text = condense_transcript(history, config=config)
+        self.assertEqual(text, "Jarvis: hello!")
+
+    def test_labels_assistant_turns_generically_without_a_config(self) -> None:
+        history = [{"role": "assistant", "content": "hello!"}]
+        self.assertEqual(condense_transcript(history), "Assistant: hello!")
+
 
 class GenerateReplyEventsFallbackTest(unittest.TestCase):
     def test_stream_setup_failure_falls_back_to_non_streamed_completion(self) -> None:
